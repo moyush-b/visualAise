@@ -1,0 +1,27 @@
+{
+    "name" : "Keyper",
+    "version" : "0.0.1",
+    "manifest_version": 3,
+    "default_locale":"en",
+    "description": "Keyper is a password manager Chrome extension that lets you generate, store, and autofill strong passwords for every site you visit. Simplify your online security with encrypted storage, multi-device sync, and two-factor authentication support.",
+    "icons": {
+        "16": "icon16.png",
+        "32": "icon32.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+      },
+    "action":{
+        "default_popup": "popup.html",
+        "default_icon": {
+        "16": "icon16.png",
+        "32": "icon32.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+      }
+    },
+    "permissions": ["activeTab"],
+    "author": {
+    "name":"Team - The Ginyu Force"
+  }
+
+}
