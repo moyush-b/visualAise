@@ -1,7 +1,7 @@
 import exp from "constants";
 import { Document, model, models, Schema, ObjectId } from "mongoose";
 
-export interface IImage extends Document {
+export interface VImage extends Document {
     title: string;
     transformationType: string;
     publicId: string;
@@ -36,7 +36,7 @@ const ImageSchema = new Schema ({
     prompt: { type: String },
     author: { type: Schema.Types.ObjectId, ref: 'User' },
     createdAt: { type: Date, default: Date.now},
-    updatedAt: { type: Date, default: Date.now}
+    updatedAt: { type: Date, default: Date.now},
 });
 
 const Image = models?.Image || model('Image', ImageSchema);
