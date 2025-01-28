@@ -53,6 +53,12 @@ export const dataUrl = `data:image/svg+xml;base64,${toBase64(
 // ==== End
 
 // FORM URL QUERY
+interface FormUrlQueryParams {
+  searchParams: URLSearchParams;
+  key: string;
+  value: string | null;
+}
+
 export const formUrlQuery = ({
   searchParams,
   key,
@@ -66,11 +72,16 @@ export const formUrlQuery = ({
 };
 
 // REMOVE KEY FROM QUERY
+interface RemoveUrlQueryParams {
+  searchParams: URLSearchParams;
+  keysToRemove: string[];
+}
+
 export function removeKeysFromQuery({
   searchParams,
   keysToRemove,
 }: RemoveUrlQueryParams) {
-  const currentUrl = qs.parse(searchParams);
+  const currentUrl = qs.parse(searchParams.toString());
 
   keysToRemove.forEach((key) => {
     delete currentUrl[key];
@@ -82,22 +93,33 @@ export function removeKeysFromQuery({
   );
 
   return `${window.location.pathname}?${qs.stringify(currentUrl)}`;
-}
+};
 
 // DEBOUNCE
-export const debounce = (func: (...args: any[]) => void, delay: number) => {
-  let timeoutId: NodeJS.Timeout | null;
-  return (...args: any[]) => {
+export const debounce = <T extends (...args: unknown[]) => void>(
+  func: T,
+  delay: number
+) => {
+  let timeoutId: NodeJS.Timeout | null = null;
+  return (...args: Parameters<T>): void => {
     if (timeoutId) clearTimeout(timeoutId);
-    timeoutId = setTimeout(() => func.apply(null, args), delay);
+    timeoutId = setTimeout(() => func(...args), delay);
   };
 };
 
-// GE IMAGE SIZE
+
+// GET IMAGE SIZE
 export type AspectRatioKey = keyof typeof aspectRatioOptions;
+
+interface ImageDimensions {
+  width?: number;
+  height?: number;
+  aspectRatio?: AspectRatioKey;
+}
+
 export const getImageSize = (
   type: string,
-  image: any,
+  image: ImageDimensions,
   dimension: "width" | "height"
 ): number => {
   if (type === "fill") {
@@ -131,12 +153,15 @@ export const download = (url: string, filename: string) => {
 };
 
 // DEEP MERGE OBJECTS
-export const deepMergeObjects = (obj1: any, obj2: any) => {
-  if(obj2 === null || obj2 === undefined) {
+export const deepMergeObjects = <T extends Record<string, unknown>>(
+  obj1: T,
+  obj2: Partial<T>
+): T => {
+  if (obj2 === null || obj2 === undefined) {
     return obj1;
   }
 
-  let output = { ...obj2 };
+  let output: T = { ...obj2 } as T;
 
   for (let key in obj1) {
     if (obj1.hasOwnProperty(key)) {
@@ -146,7 +171,10 @@ export const deepMergeObjects = (obj1: any, obj2: any) => {
         obj2[key] &&
         typeof obj2[key] === "object"
       ) {
-        output[key] = deepMergeObjects(obj1[key], obj2[key]);
+        output[key] = deepMergeObjects(
+          obj1[key] as Record<string, unknown>,
+          obj2[key] as Partial<Record<string, unknown>>
+        ) as T[Extract<keyof T, string>];
       } else {
         output[key] = obj1[key];
       }

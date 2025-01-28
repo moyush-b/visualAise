@@ -1,5 +1,5 @@
-import exp from "constants";
-import { Document, model, models, Schema, ObjectId } from "mongoose";
+
+import { Document, model, models, Schema} from "mongoose";
 
 export interface VImage extends Document {
     title: string;

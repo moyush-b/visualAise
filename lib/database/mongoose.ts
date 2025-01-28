@@ -1,31 +1,34 @@
-import mongoose, { Mongoose } from 'mongoose';
+import mongoose from 'mongoose';
 
 const MONGODB_URL = process.env.MONGODB_URL;
 
 interface MongooseConnection {
-    conn: Mongoose | null;
-    promise: Promise<Mongoose> | null;
+  conn: mongoose.Mongoose | null;
+  promise: Promise<mongoose.Mongoose> | null;
 }
 
-let cached: MongooseConnection = (global as any).mongoose
-
-if(!cached) {
-    cached = (global as any).mongoose = {
-        conn: null, promise: null
-    }
+// Extend the global object type to include mongoose
+declare global {
+  var mongoose: MongooseConnection | undefined;
 }
+
+const cached: MongooseConnection = globalThis.mongoose || { 
+  conn: null, 
+  promise: null 
+};
 
 export const connectToDatabase = async () => {
-    if(cached.conn) return cached.conn;
+  if (cached.conn) return cached.conn;
 
-    if(!MONGODB_URL) throw new Error('Missing MongoDB URL.');
+  if (!MONGODB_URL) throw new Error('Missing MONGODB_URL');
 
-    cached.promise = cached.promise ||
-    mongoose.connect(MONGODB_URL, {
-        dbName: 'visualAise', bufferCommands: false
-    })
-    
-    cached.conn = await cached.promise;
+  cached.promise = cached.promise || 
+    mongoose.connect(MONGODB_URL, { 
+      dbName: 'imaginify', 
+      bufferCommands: false 
+    });
 
-    return cached.conn;
-}
+  cached.conn = await cached.promise;
+
+  return cached.conn;
+};
