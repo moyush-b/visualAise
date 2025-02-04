@@ -1,7 +1,7 @@
 
 import { Document, model, models, Schema} from "mongoose";
 
-export interface VImage extends Document {
+export interface IImage extends Document {
     title: string;
     transformationType: string;
     publicId: string;
