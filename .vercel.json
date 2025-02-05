@@ -2,6 +2,9 @@
     "build": {
       "env": {
         "NODE_OPTIONS": "--legacy-peer-deps"
+      },
+      "commands": {
+        "build": "./vercel-build.sh"
       }
     }
   }
